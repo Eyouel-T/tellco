@@ -15,7 +15,7 @@ def loadData():
     )
     #cursor = conn.cursor()
     cursor = conn.cursor('my_cursor_name', withhold=True)
-    cursor.execute("SELECT * FROM xdr_data limit 1000")
+    cursor.execute("SELECT * FROM xdr_data")
         # Fetch a batch of rows
     batch_size = 1000
     rows = cursor.fetchmany(batch_size)
@@ -27,6 +27,12 @@ def loadData():
         data += rows
         # Fetch the next batch
         rows = cursor.fetchmany(batch_size)
+
+        if len(data) >= 50000:
+            columns = [desc[0] for desc in cursor.description]
+            df = pd.DataFrame(data, columns=columns)
+            return df
+
     columns = [desc[0] for desc in cursor.description]
     cursor.close()
     conn.close()  
