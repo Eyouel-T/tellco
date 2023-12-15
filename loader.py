@@ -27,7 +27,8 @@ def loadData():
         data += rows
         # Fetch the next batch
         rows = cursor.fetchmany(batch_size)
-
+        if not rows:
+            break
         if len(data) >= 50000:
             columns = [desc[0] for desc in cursor.description]
             df = pd.DataFrame(data, columns=columns)
